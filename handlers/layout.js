@@ -7,6 +7,16 @@ const init = {
     headers: { 'content-type': 'text/html' },
 }
 
+var socialdata = ["https://www.facebook.com/parth.sarthi.543",
+                  "https://www.linkedin.com/in/parth-sarthi-prasad-510600185/",
+                  "https://github.com/parthsarthiprasad",
+                  "https://www.instagram.com/sarthparthi/",
+                  "mailto: parthp.co18@nsut.ac.in"]
+var svglinks = ["https://simpleicons.org/icons/facebook.svg",
+                "https://simpleicons.org/icons/linkedin.svg",
+                "https://simpleicons.org/icons/github.svg",
+                "https://simpleicons.org/icons/instagram.svg",
+                "https://simpleicons.org/icons/gmail.svg"]
 class LinksHandler {
     element(element) {
         data.forEach(linkdata =>{
@@ -34,6 +44,31 @@ class AvatarHandler {
         }
     }
 }
+
+class SocialHandler {
+    element(element) {
+        element.setAttribute("display", "flex")
+    }
+    for(var i =0; i<socialdata.length; i++){
+        var el = document.createElement('a')
+        el.setAttribute('href', socialdata[i])
+        el.innerHTML = svglinks[i];
+        element.appendChild(el)   
+    }
+}
+
+class TitleEditor {
+    element(element){
+        element.innerText = `Parth Sarthi Prasad`
+    }
+} 
+
+class BgEditor {
+    element(element){
+        element.setAttribute('background-color', "rgba(126,32,144,var(--bg-opacity))")
+    }
+}
+
 const handler = async () => {
     try{
         
@@ -48,4 +83,7 @@ const rewriter = new HTMLRewriter()
     .on('#links', new LinksHandler())
     .on("div $profile" , new ProfileHandler())
     .on("#avatar", new AvatarHandler())
+    .on("#social", new SocialHandler())
+    .on("title", new TitleEditor())
+    .on("body", new BgEditor())
 module.exports = handler
