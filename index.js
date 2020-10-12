@@ -14,12 +14,12 @@ addEventListener('fetch', event => {
 
 
 async function handleRequest(request) {
-    const r = new Router()
     // Replace with the appropriate paths and handlers
 
     try{
-    r.get('./links', links)
-    r.get('./*', layout)
+    const r = new Router()
+    r.get('/links', links)
+    r.get('/*', layout)
     return r.route(request)
     }
     catch(err){

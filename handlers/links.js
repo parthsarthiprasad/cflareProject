@@ -1,23 +1,24 @@
 var data = [
     {
-        "name": 
-        "url":
+        "name": "First Link",
+        "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO"
     },
     {
-        "name": 
-        "url":
+        "name": "Second Link",
+        "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO"
     },
     {
-        "name": 
-        "url":
+        "name": "my resume",
+        "url": "https://parthsarthiprasad.github.io/"
     }
 ]
-const init = {
-    headers: { 'content-type': 'application/json; charset=UTF-8' },
-}
-const body = JSON.stringify(data)
-const handler = request =>{
+
+const handler = () =>{
     try{
+        const body = JSON.stringify(data)
+        const init = {
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
+        }
         return new Response(body, init)
     }catch(err){
         return new Response(err)
