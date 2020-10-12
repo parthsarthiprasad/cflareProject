@@ -32,7 +32,7 @@ class ProfileHandler {
     element(element){
         element.setAttribute("display", "flex")
         if(!element.getAttribute("loading")){
-            element.setAttribute('loading', 'laxy')
+            element.setAttribute('loading', 'lazy')
         }
     }
 }
@@ -50,8 +50,8 @@ class SocialHandler {
     // svglinks: [];
     element(element) {
         element.setAttribute("display", "flex")
-    
-    for(var i =0; i<socialdata.length; i++){
+    if(element.childElementCount!=socialdata.length)
+    for(var i =element.childElementCount; i<socialdata.length; i++){
         var el = document.createElement('a')
         el.setAttribute('href', socialdata[i])
         el.innerHTML = svglinks[i];
@@ -74,7 +74,8 @@ class BgEditor {
 
 const handler = async () => {
     try{
-        template =  fetch(templatePage)
+        var res =  fetch(templatePage)
+        template = (await res).text()
         return rewriter.transform(template)
         // return new Response(template, init)
     }catch(err){
