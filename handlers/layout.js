@@ -1,7 +1,7 @@
 const templatePage = `https://static-links-page.signalnerve.workers.dev`
 const linksdata = require("./links")
 const avatarurl = "https://github.com/parthsarthiprasad/parthsarthiprasad.github.io/blob/master/public/images/myimage.jpeg"
-var data = linksdata();
+var data = JSON.parse(linksdata());
 var template 
 const init = {
     headers: { 'content-type': 'text/html' }
@@ -18,6 +18,8 @@ var svglinks = ["https://simpleicons.org/icons/facebook.svg",
                 "https://simpleicons.org/icons/instagram.svg",
                 "https://simpleicons.org/icons/gmail.svg"];
 class LinksHandler {
+
+    
     element(element) {
         data.forEach(linkdata =>{
             var el = document.createElement('a')
@@ -74,10 +76,19 @@ class BgEditor {
 
 const handler = async () => {
     try{
-        var res =  fetch(templatePage)
-        template = (await res).text()
-        return rewriter.transform(template)
-        // return new Response(template, init)
+        fetch(templatePage)
+        .then((res)=>{
+            template = res.text()
+            return res.text;
+        }).then((html)=>{
+            var parser = new DOMParser();
+            template = parser.parseFromString(html, "text/html");
+        }).catch((err)=>{
+            return new Response(err)
+        })
+        
+        // return rewriter.transform(template)
+        return new Response(template, init)
     }catch(err){
         return new Response(err)
     }

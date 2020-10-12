@@ -18,9 +18,11 @@ async function handleRequest(request) {
 
     try{
     const r = new Router()
-    r.get('/links', links)
-    r.get('/*', layout)
-    return r.route(request)
+    r.get('.*/links', links)
+    r.get('.*/*', layout)
+    // r.get('.*/*', () => new Response('Hell!'))
+    const  resp = await r.route(request)
+    return resp;
     }
     catch(err){
         return new Response(err)
