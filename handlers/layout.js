@@ -1,8 +1,8 @@
 const templatePage = `https://static-links-page.signalnerve.workers.dev`
-const linksdata = require("./links")
-const avatarurl = "https://github.com/parthsarthiprasad/parthsarthiprasad.github.io/blob/master/public/images/myimage.jpeg"
-var data = JSON.parse(linksdata());
-var template 
+// const linksdata = require("./links")
+const avatarurl = "https://www.kindpng.com/picc/b/22/223941.png"
+// var data 
+
 const init = {
     headers: { 'content-type': 'text/html' }
 }
@@ -17,89 +17,115 @@ var svglinks = ["https://simpleicons.org/icons/facebook.svg",
                 "https://simpleicons.org/icons/github.svg",
                 "https://simpleicons.org/icons/instagram.svg",
                 "https://simpleicons.org/icons/gmail.svg"];
-class LinksHandler {
+// async function fetchData(){
+//     let response = linksdata();
+//     let data = await response.json();
+//     data = JSON.stringify(data);
+//     data = JSON.parse(data);
+//     return data;
+// }
 
+// class LinksHandler {
+//     if(data){
+//         data =  fetchData();
+//     }
     
-    element(element) {
-        data.forEach(linkdata =>{
-            var el = document.createElement('a')
-            el.setAttribute('href', linkdata.url)
-            el.innerText = linkdata.name
-            element.appendChild(el)
-        })
-    }
-}
+//     element(element) {
+//         data.forEach(linkdata =>{
+//             var el = document.createElement('a')
+//             el.setAttribute('href', linkdata.url)
+//             el.innerText = linkdata.name
+//             element.appendChild(el)
+//         })
+//     }
+// }
 
-class ProfileHandler {
-    element(element){
-        element.setAttribute("display", "flex")
-        if(!element.getAttribute("loading")){
-            element.setAttribute('loading', 'lazy')
-        }
-    }
-}
 
-class AvatarHandler {
-    element(element){
-        if(!element.getAttribute("src")){
-            element.setAttribute('src', avatarurl)
-        }
-    }
-}
 
-class SocialHandler {
-    // socialdata: [];
-    // svglinks: [];
-    element(element) {
-        element.setAttribute("display", "flex")
-    if(element.childElementCount!=socialdata.length)
-    for(var i =element.childElementCount; i<socialdata.length; i++){
-        var el = document.createElement('a')
-        el.setAttribute('href', socialdata[i])
-        el.innerHTML = svglinks[i];
-        element.appendChild(el)   
-    }
-    }
-}
+
+// class SocialHandler {
+//     // socialdata: [];
+//     // svglinks: [];
+//     constructor(socialdata = [], svglinks= []){
+//         this.socialdata = socialdata
+//         this.svglinks = svglinks
+//     }
+//     element(element) {
+//         element.setAttribute("style", "display: flex")
+//     if(element.childElementCount!=this.socialdata.length)
+//     for(var i =element.childElementCount; i<this.socialdata.length; i++){
+//         var el = document.createElement('a')
+//         el.setAttribute('href', this.socialdata[i])
+//         el.innerHTML = this.svglinks[i];
+//         console.log(el)
+//         element.append(el)   
+//     }
+//     }
+// }
 
 class TitleEditor {
     element(element){
-        element.innerText = `Parth Sarthi Prasad`
+        element.setInnerContent(`Parth Sarthi Prasad`)
     }
 } 
 
-class BgEditor {
-    element(element){
-        element.setAttribute('background-color', "rgba(126,32,144,var(--bg-opacity))")
-    }
-}
 
-const handler = async () => {
-    try{
-        fetch(templatePage)
-        .then((res)=>{
-            template = res.text()
-            return res.text;
-        }).then((html)=>{
-            var parser = new DOMParser();
-            template = parser.parseFromString(html, "text/html");
-        }).catch((err)=>{
-            return new Response(err)
-        })
-        
-        // return rewriter.transform(template)
-        return new Response(template, init)
-    }catch(err){
-        return new Response(err)
+
+class AttributeSetHandler{
+    constructor(attributeName, attributeValue){
+        this.attributeName = attributeName
+        this.attributeValue = attributeValue
+    }
+    element(element){
+        element.setAttribute(this.attributeName, this.attributeValue)
     }
 }
+/**
+ * gatherResponse awaits and returns a response body as a string.
+ * Use await gatherResponse(..) in an async function to get the response body
+ * @param {Response} response
+ */
+async function gatherResponse(response) {
+    const { headers } = response
+    const contentType = headers.get("content-type") || ""
+    if (contentType.includes("application/json")) {
+      return JSON.stringify(await response.json())
+    }
+    else if (contentType.includes("application/text")) {
+      return await response.text()
+    }
+    else if (contentType.includes("text/html")) {
+      return await response.text()
+    }
+    else {
+      return await response.text()
+    }
+  }
+
+
 
 const rewriter = new HTMLRewriter()
-    .on('#links', new LinksHandler())
-    .on("div $profile" , new ProfileHandler())
-    .on("#avatar", new AvatarHandler())
-    .on("#social", new SocialHandler(socialdata, svglinks))
-    .on("title", new TitleEditor())
-    .on("body", new BgEditor())
+    .on('#avatar', new AttributeSetHandler("src", avatarurl))
+    .on('title', new TitleEditor())
+    .on('body', new AttributeSetHandler('style', "background-color: blue"))
+    .on('#profile', new AttributeSetHandler('style', ' display: flex'))
+    .on('#social', new SocialHandler(socialdata, svglinks))
+    // .on("#profile", new ProfileHandler())
+// const rewriter = new HTMLRewriter()
+//     .on('#links', new LinksHandler())
+//     .on("div $profile" , new ProfileHandler())
 
+//     .on("#social", new SocialHandler(socialdata, svglinks))
+
+
+
+const handler = async () => {
+  
+    const response = await fetch(templatePage,init)
+    // var results = await gatherResponse(response)
+    var template = rewriter.transform(response)
+    // return new Response(results,init)
+    // return results;
+    return template;
+}
 module.exports = handler
