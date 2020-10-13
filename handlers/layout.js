@@ -1,7 +1,7 @@
 const templatePage = `https://static-links-page.signalnerve.workers.dev`
 // const linksdata = require("./links")
 const avatarurl = "https://www.kindpng.com/picc/b/22/223941.png"
-// var data 
+var data 
 
 const init = {
     headers: { 'content-type': 'text/html' }
@@ -43,25 +43,23 @@ var svglinks = ["https://simpleicons.org/icons/facebook.svg",
 
 
 
-// class SocialHandler {
-//     // socialdata: [];
-//     // svglinks: [];
-//     constructor(socialdata = [], svglinks= []){
-//         this.socialdata = socialdata
-//         this.svglinks = svglinks
-//     }
-//     element(element) {
-//         element.setAttribute("style", "display: flex")
-//     if(element.childElementCount!=this.socialdata.length)
-//     for(var i =element.childElementCount; i<this.socialdata.length; i++){
-//         var el = document.createElement('a')
-//         el.setAttribute('href', this.socialdata[i])
-//         el.innerHTML = this.svglinks[i];
-//         console.log(el)
-//         element.append(el)   
-//     }
-//     }
-// }
+class SocialHandler {
+    // socialdata: [];
+    // svglinks: [];
+    constructor(socialdata = [], svglinks= []){
+        this.socialdata = socialdata
+        this.svglinks = svglinks
+    }
+    element(element) {
+        element.setAttribute("style", "display: flex")
+        for(var i =0; i<this.socialdata.length; i++){
+            var el = `<a href ="${socialdata[i]}" ><svg width="100%" height= "auto" viewBox = "0 0 150 150" preserveAspectRatio="xMidYmid meet"><image xlink:href="${svglinks[i]}"></image></svg></a>`
+            element.append(el, {html: true})
+        }
+        
+      
+    }
+}
 
 class TitleEditor {
     element(element){
