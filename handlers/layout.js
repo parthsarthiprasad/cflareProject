@@ -17,6 +17,15 @@ var svglinks = ["https://simpleicons.org/icons/facebook.svg",
                 "https://simpleicons.org/icons/instagram.svg",
                 "https://simpleicons.org/icons/gmail.svg"];
 
+                /**
+ * fetchData awaits and returns a response body as a string.
+ * Use await fetchData(..) in an async function to get the response body
+ * @param {Response} response
+ */
+
+
+
+
 async function fetchData(){
     var response = linksdata();
     var data = await response.json();
@@ -25,6 +34,8 @@ async function fetchData(){
     return data;
 }
 
+
+
 class LinksHandler {
     constructor(tableData = []){
         this.tableData = tableData
@@ -32,9 +43,6 @@ class LinksHandler {
     
     element(element) {
         this.tableData.forEach((linkdata) =>{
-            // var el = document.createElement('a')
-            // el.setAttribute('href', linkdata.url)
-            // el.innerText = linkdata.name
             var el = `<a href="${linkdata.url}">${linkdata.name}</a>`
             element.append(el, {html: true})
         })
@@ -83,22 +91,6 @@ class AttributeSetHandler{
  * Use await gatherResponse(..) in an async function to get the response body
  * @param {Response} response
  */
-async function gatherResponse(response) {
-    const { headers } = response
-    const contentType = headers.get("content-type") || ""
-    if (contentType.includes("application/json")) {
-      return JSON.stringify(await response.json())
-    }
-    else if (contentType.includes("application/text")) {
-      return await response.text()
-    }
-    else if (contentType.includes("text/html")) {
-      return await response.text()
-    }
-    else {
-      return await response.text()
-    }
-  }
 
 
 

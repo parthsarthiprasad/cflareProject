@@ -20,7 +20,6 @@ async function handleRequest(request) {
     const r = new Router()
     r.get('.*/links', links)
     r.get('.*/*', layout)
-    // r.get('.*/*', () => new Response('Hell!'))
     const  resp = await r.route(request)
     return resp;
     }
