@@ -1,7 +1,6 @@
 const templatePage = `https://static-links-page.signalnerve.workers.dev`
-// const linksdata = require("./links")
+const linksdata = require("./links")
 const avatarurl = "https://www.kindpng.com/picc/b/22/223941.png"
-var data 
 
 const init = {
     headers: { 'content-type': 'text/html' }
@@ -17,35 +16,36 @@ var svglinks = ["https://simpleicons.org/icons/facebook.svg",
                 "https://simpleicons.org/icons/github.svg",
                 "https://simpleicons.org/icons/instagram.svg",
                 "https://simpleicons.org/icons/gmail.svg"];
-// async function fetchData(){
-//     let response = linksdata();
-//     let data = await response.json();
-//     data = JSON.stringify(data);
-//     data = JSON.parse(data);
-//     return data;
-// }
 
-// class LinksHandler {
-//     if(data){
-//         data =  fetchData();
-//     }
+async function fetchData(){
+    var response = linksdata();
+    var data = await response.json();
+    data = JSON.stringify(data);
+    data = JSON.parse(data);
+    return data;
+}
+
+class LinksHandler {
+    constructor(tableData = []){
+        this.tableData = tableData
+    }
     
-//     element(element) {
-//         data.forEach(linkdata =>{
-//             var el = document.createElement('a')
-//             el.setAttribute('href', linkdata.url)
-//             el.innerText = linkdata.name
-//             element.appendChild(el)
-//         })
-//     }
-// }
+    element(element) {
+        this.tableData.forEach((linkdata) =>{
+            // var el = document.createElement('a')
+            // el.setAttribute('href', linkdata.url)
+            // el.innerText = linkdata.name
+            var el = `<a href="${linkdata.url}">${linkdata.name}</a>`
+            element.append(el, {html: true})
+        })
+       
+    }
+}
 
 
 
 
 class SocialHandler {
-    // socialdata: [];
-    // svglinks: [];
     constructor(socialdata = [], svglinks= []){
         this.socialdata = socialdata
         this.svglinks = svglinks
@@ -53,7 +53,7 @@ class SocialHandler {
     element(element) {
         element.setAttribute("style", "display: flex")
         for(var i =0; i<this.socialdata.length; i++){
-            var el = `<a href ="${socialdata[i]}" ><svg width="100%" height= "auto" viewBox = "0 0 150 150" preserveAspectRatio="xMidYmid meet"><image xlink:href="${svglinks[i]}"></image></svg></a>`
+            var el = `<a href ="${this.socialdata[i]}" ><svg width="100%" height= "100%" viewBox = "0 0 150 150" ><image xlink:href="${this.svglinks[i]}"></image></svg></a>`
             element.append(el, {html: true})
         }
         
@@ -102,26 +102,23 @@ async function gatherResponse(response) {
 
 
 
-const rewriter = new HTMLRewriter()
+const rewriter =(data) => new HTMLRewriter()
     .on('#avatar', new AttributeSetHandler("src", avatarurl))
     .on('title', new TitleEditor())
     .on('body', new AttributeSetHandler('style', "background-color: blue"))
     .on('#profile', new AttributeSetHandler('style', ' display: flex'))
+    .on('#links', new LinksHandler(data))
     .on('#social', new SocialHandler(socialdata, svglinks))
-    // .on("#profile", new ProfileHandler())
-// const rewriter = new HTMLRewriter()
-//     .on('#links', new LinksHandler())
-//     .on("div $profile" , new ProfileHandler())
-
-//     .on("#social", new SocialHandler(socialdata, svglinks))
-
+   
 
 
 const handler = async () => {
   
     const response = await fetch(templatePage,init)
+    data = await fetchData();
+    
     // var results = await gatherResponse(response)
-    var template = rewriter.transform(response)
+    var template = rewriter(data).transform(response)
     // return new Response(results,init)
     // return results;
     return template;
